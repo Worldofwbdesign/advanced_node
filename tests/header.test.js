@@ -1,18 +1,14 @@
-const puppeteer = require('puppeteer');
+const Page = require('./helpers/page');
 
-let browser, page;
+let page;
 
 beforeEach(async () => {
-  browser = await puppeteer.launch({
-    headless: false
-  });
-  page = await browser.newPage();
-
+  page = await Page.build();
   await page.goto('localhost:3000');
 });
 
 afterEach(async () => {
-  await browser.close();
+  await page.close();
 });
 
 test('Should show correct text in header', async () => {
@@ -26,4 +22,13 @@ test('Should go to google accounts', async () => {
   const url = page.url();
 
   expect(url).toMatch(/accounts\.google\.com/);
+});
+
+test('Should show logout button after login', async () => {
+  await page.login();
+  const elSelector = 'a[href="/auth/logout"]';
+  await page.waitFor(elSelector);
+
+  const text = await page.$eval(elSelector, el => el.innerHTML);
+  expect(text).toEqual('Logout');
 });
