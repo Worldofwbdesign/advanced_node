@@ -4,7 +4,7 @@ let page;
 
 beforeEach(async () => {
   page = await Page.build();
-  await page.goto('localhost:3000');
+  await page.goto('http://localhost:3000');
 });
 
 afterEach(async () => {
@@ -12,7 +12,7 @@ afterEach(async () => {
 });
 
 test('Should show correct text in header', async () => {
-  const text = await page.$eval('a.brand-logo', el => el.innerHTML);
+  const text = await page.getElContent('a.brand-logo');
   expect(text).toEqual('Blogster');
 });
 
@@ -29,6 +29,6 @@ test('Should show logout button after login', async () => {
   const elSelector = 'a[href="/auth/logout"]';
   await page.waitFor(elSelector);
 
-  const text = await page.$eval(elSelector, el => el.innerHTML);
+  const text = await page.getElContent(elSelector);
   expect(text).toEqual('Logout');
 });

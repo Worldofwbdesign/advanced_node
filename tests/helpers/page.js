@@ -5,7 +5,8 @@ const userFactory = require('../factories/userFactory');
 class CustomPage {
   static async build() {
     const browser = await puppeteer.launch({
-      headless: false
+      headless: true,
+      args: ['--no-sandbox']
     });
     const page = await browser.newPage();
     const customPage = new CustomPage(page, browser);
@@ -26,7 +27,11 @@ class CustomPage {
 
     await this.setCookie({ name: 'session', value: session });
     await this.setCookie({ name: 'session.sig', value: sig });
-    await this.reload();
+    await this.goto('http://localhost:3000/blogs');
+  }
+
+  getElContent(path) {
+    return this.$eval(path, el => el.innerHTML);
   }
 }
 
